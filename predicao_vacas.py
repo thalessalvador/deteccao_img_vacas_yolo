@@ -26,9 +26,9 @@ except Exception as e:
 IMG_PATH = Path("cows2021-DatasetNinja/detection_and_localisation-train/images/00061.jpg")
 ANN_PATH = Path("cows2021-DatasetNinja/detection_and_localisation-train/ann/00061.jpg.json")
 #MODEL_PATH = Path("yolov8n.pt")  # modelo base (COCO), classe esperada: "cow"
-MODEL_PATH = Path("yolo11n.pt")  # modelo base (COCO), classe esperada: "cow"
-#MODEL_PATH = Path("yolov8n_dorso_vaca.pt")  # modelo local, classe esperada: "cattle_torso"
-CLASSE_ALVO = "cow"  # Use "cow" para modelos base; "cattle_torso" para o modelo treinado.
+#MODEL_PATH = Path("yolo11n.pt")  # modelo base (COCO), classe esperada: "cow"
+MODEL_PATH = Path("yolov8n_dorso_vaca.pt")  # modelo local, classe esperada: "cattle_torso"
+CLASSE_ALVO = "cattle_torso"  # Use "cow" para modelos base; "cattle_torso" para o modelo treinado.
 CONF_THRES = 0.25  # Limiar de confiança das predições da YOLO (filtra detecções fracas).
 IOU_THRES = 0.5  # Limiar de IoU para considerar uma predição como verdadeiro positivo.
 
