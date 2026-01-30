@@ -72,7 +72,7 @@ pip install --pre torch torchvision torchaudio --index-url https://download.pyto
 
 ## Treinamento
 
-Treina a partir de um modelo base (ex.: `yolov8n.pt` - configurável no código) e gera um modelo customizado:
+Treina a partir de um modelo base (ex.: `yolov8n.pt` - configurável no  `treinar.py`) e gera um modelo customizado:
 
 ```powershell
 python .\treinar.py
@@ -80,7 +80,7 @@ python .\treinar.py
 
 Saída esperada: `yolov8n_dorso_vaca.pt` (configurável no `treinar.py`).
 
-**Importante:** o `00061.jpg` e o `00061.jpg.json` são **excluídos explicitamente** do treino para evitar data leakage. O nome do arquivo é configurável no código.
+**Importante:** o `00061.jpg` e o `00061.jpg.json` são **excluídos explicitamente** do treino para evitar data leakage. O nome do arquivo é configurável no `treinar.py`.
 
 ## Predição / Avaliação
 
