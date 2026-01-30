@@ -272,7 +272,7 @@ def treinar_modelo(data_yaml: Path):
     return OUTPUT_MODEL_PATH
 
 
-def principal():
+def main():
     """
     Fluxo principal: prepara o dataset YOLO e treina o modelo.
 
@@ -288,4 +288,4 @@ def principal():
 
 
 if __name__ == "__main__":
-    principal()
+    main()
