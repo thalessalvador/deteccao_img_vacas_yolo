@@ -3,7 +3,7 @@ Detecção de vacas com YOLO e comparação com rótulos (GT) do DatasetNinja.
 
 O script:
 1) Lê as caixas de ground-truth do JSON.
-2) Executa YOLO na imagem e filtra a classe "cow".
+2) Executa YOLO na imagem e filtra a classe definida em CLASSE_ALVO.
 3) Desenha boxes (GT e predições) em memória.
 4) Exibe as imagens na tela.
 5) Calcula IoU por predição e AP@0.5 (mAP@0.5 para 1 classe e 1 imagem).
@@ -25,8 +25,10 @@ except Exception as e:
 
 IMG_PATH = Path("cows2021-DatasetNinja/detection_and_localisation-train/images/00061.jpg")
 ANN_PATH = Path("cows2021-DatasetNinja/detection_and_localisation-train/ann/00061.jpg.json")
-#MODEL_PATH = Path("yolov8n.pt")  # ajuste se tiver um modelo local
-MODEL_PATH = Path("yolo11n.pt")  # ajuste se tiver um modelo local
+#MODEL_PATH = Path("yolov8n.pt")  # modelo base (COCO), classe esperada: "cow"
+MODEL_PATH = Path("yolo11n.pt")  # modelo base (COCO), classe esperada: "cow"
+#MODEL_PATH = Path("yolov8n_dorso_vaca.pt")  # modelo local, classe esperada: "cattle_torso"
+CLASSE_ALVO = "cow"  # Use "cow" para modelos base; "cattle_torso" para o modelo treinado.
 CONF_THRES = 0.25  # Limiar de confiança das predições da YOLO (filtra detecções fracas).
 IOU_THRES = 0.5  # Limiar de IoU para considerar uma predição como verdadeiro positivo.
 
@@ -91,17 +93,19 @@ def executar_yolo(image_path: Path, model_path: Path, conf: float):
     return preds
 
 
-def filtrar_vaca(preds):
+def filtrar_classe(preds, classe_alvo):
     """
-    Filtra apenas a classe 'cow' (COCO) nas predições.
+    Filtra apenas a classe desejada nas predições.
 
-    Parâmetros:
-        preds (list[dict]): Lista de predições geradas pela YOLO.
+    Parametros:
+        preds (list[dict]): Lista de predicoes geradas pela YOLO.
+        classe_alvo (str): Nome da classe a manter (ex: "cow", "cattle_torso").
 
     Retorna:
-        list[dict]: Lista de predições apenas da classe "cow".
+        list[dict]: Lista de predicoes apenas da classe desejada.
     """
-    return [p for p in preds if p["name"].lower() == "cow"]
+    alvo = classe_alvo.lower().strip()
+    return [p for p in preds if p["name"].lower() == alvo]
 
 
 def calcular_iou(a, b):
@@ -262,15 +266,15 @@ def principal():
     # 1) Carrega GT e roda YOLO
     gt_boxes = carregar_caixas_gt(ANN_PATH)
     preds = executar_yolo(IMG_PATH, MODEL_PATH, CONF_THRES)
-    cow_preds = filtrar_vaca(preds)
+    class_preds = filtrar_classe(preds, CLASSE_ALVO)
 
     img = Image.open(IMG_PATH).convert("RGB")
 
     # 2) Renderiza imagens em memória
     model_name = MODEL_PATH.name
-    yolo_img = desenhar_caixas(img, [], cow_preds, f"Predições da YOLO ({model_name})")
+    yolo_img = desenhar_caixas(img, [], class_preds, f"Predições da YOLO ({model_name})")
     overlay_img = desenhar_caixas(
-        img, gt_boxes, cow_preds, f"GT (green) + YOLO (red) ({model_name})"
+        img, gt_boxes, class_preds, f"GT (green) + YOLO (red) ({model_name})"
     )
 
     # 3) Exibe na tela
@@ -288,13 +292,14 @@ def principal():
     # mAP (mean Average Precision): média da AP entre classes; aqui usamos AP@0.5,
     # que integra a curva precisão-recall com IoU >= 0.5. Como é 1 classe/1 imagem,
     # mAP@0.5 = AP@0.5.
-    matches = casar_predicoes(gt_boxes, cow_preds, IOU_THRES)
+    matches = casar_predicoes(gt_boxes, class_preds, IOU_THRES)
     ap50 = calcular_ap(matches, len(gt_boxes))
     map50 = ap50  # single class, single image
 
     print("Modelo usado:", MODEL_PATH.name)
+    print("Classe alvo:", CLASSE_ALVO)
     print("Caixas GT:", len(gt_boxes))
-    print("Caixas preditas (cow):", len(cow_preds))
+    print("Caixas preditas (classe alvo):", len(class_preds))
     print("Correspondências (ordenadas por confiança):")
     for i, m in enumerate(matches, 1):
         box = m["pred"]["box"]
@@ -305,8 +310,8 @@ def principal():
     print(f"mAP@0.5 (imagem/classe única): {map50:.4f}")
 
     # Se não houver vacas detectadas, mostre o que a YOLO encontrou
-    if len(cow_preds) == 0:
-        print("Nenhuma predição da classe 'cow' foi encontrada.")
+    if len(class_preds) == 0:
+        print(f"Nenhuma predição da classe '{CLASSE_ALVO}' foi encontrada.")
         if len(preds) == 0:
             print("A YOLO não retornou nenhuma predição acima do CONF_THRES.")
         else:
