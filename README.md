@@ -1,7 +1,9 @@
 # Projeto: Detecção de Vacas com YOLO
 
 Este projeto treina e avalia um modelo YOLO para detectar vacas (cattle torso) usando o dataset **cows2021-DatasetNinja**.
-Ele inclui scripts para **treinamento** e **predição** com visualização e métricas.
+Ele inclui scripts para **treinamento** e **predição** com visualização e métricas.O objetivo é aplicar uma predição na imagem `00061.jpg`com alguns modelos yolo e o modelo treinado especificamente no dataset abaixo.
+
+
 
 ## Estrutura do dataset (necessario antes de rodar)
 
