@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Dataset
+cows2021-DatasetNinja/
+
+# Treinamento / saídas do Ultralytics
+runs/
+
+# Pesos baixados (opcional)
+*.pt
