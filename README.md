@@ -5,7 +5,7 @@ Ele inclui scripts para **treinamento** e **predição** com visualização e m�
 
 
 
-## Estrutura do dataset (necessario antes de rodar)
+## Estrutura do dataset (necessário antes de rodar)
 
 O Ultralytics espera `images/` e `labels/`. Como o dataset original usa `img/`, renomeie **uma vez** em cada split:
 
