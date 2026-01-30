@@ -99,7 +99,7 @@ CLASSE_ALVO = "cow"   **IMPORTANTE:Use "cow" para modelos base; "cattle_torso" p
 
 Se quiser comparar com o modelo base, troque para `yolov8n.pt`, `yolo11n.pt`, por exemplo.
 
-## Exemplos de execucao (predicao_vacas.py)
+## Exemplos de execucao com a vaca 00061.jpg(predicao_vacas.py)
 
 Execute:
 
